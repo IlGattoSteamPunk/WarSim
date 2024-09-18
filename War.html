@@ -146,6 +146,13 @@
                 'https://discord.com/api/webhooks/1286012128360402974/ixyMYLy_7RpbkZql3wiK4Uw77uiPDfvNZcEtlqcX0meb58bKmYO4EKT80HCYlR4CzM52'
             ];
 
+            const embed = {
+                title: "⚔️ Risultato della Battaglia ⚔️",
+                description: `**La fazione vincitrice è:** ${vincitore}`,
+                color: 0xFF0000, // Rosso
+                timestamp: new Date().toISOString()
+            };
+
             webhooks.forEach(webhook => {
                 fetch(webhook, {
                     method: 'POST',
@@ -153,7 +160,7 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        content: `La fazione vincitrice è: ${vincitore}!`
+                        embeds: [embed]
                     })
                 }).catch(error => console.error('Errore inviando il risultato al webhook:', error));
             });
