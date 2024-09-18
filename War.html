@@ -38,7 +38,7 @@
         }
 
         input {
-            width: 100%;
+            width: calc(100% - 22px);
             padding: 10px;
             margin-bottom: 20px;
             border: 1px solid #555;
@@ -114,7 +114,7 @@
             const fazione2 = document.getElementById('fazione2').value;
 
             // Controlla se entrambe le fazioni sono state inserite
-            if (!fazione1 || !fazione2) {
+            if (!fazione1.trim() || !fazione2.trim()) {
                 alert("Per favore inserisci entrambi i nomi delle fazioni!");
                 return;
             }
@@ -134,7 +134,29 @@
                 risultatoDiv.innerHTML = "La fazione vincitrice è: " + vincitore + "!";
                 risultatoDiv.style.opacity = 1;
                 loadingDiv.style.display = 'none';
+
+                // Invia il risultato ai webhook
+                sendResultToWebhook(vincitore);
             }, 3000); // 3 secondi di suspense
+        }
+
+        function sendResultToWebhook(vincitore) {
+            const webhooks = [
+                'https://discord.com/api/webhooks/1286012119447507025/BagS-OOd5b5v-yn0lOeM9-aBUGJ0CHOiY6Bi0k675FkJhak9lYt73zmgVTo2BTlGfphh',
+                'https://discord.com/api/webhooks/1286012128360402974/ixyMYLy_7RpbkZql3wiK4Uw77uiPDfvNZcEtlqcX0meb58bKmYO4EKT80HCYlR4CzM52'
+            ];
+
+            webhooks.forEach(webhook => {
+                fetch(webhook, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        content: `La fazione vincitrice è: ${vincitore}!`
+                    })
+                }).catch(error => console.error('Errore inviando il risultato al webhook:', error));
+            });
         }
     </script>
 
