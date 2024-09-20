@@ -22,7 +22,7 @@
         }
 
         .container {
-            max-width: 600px;
+            max-width: 500px;
             margin: 0 auto;
             background-color: rgba(0, 0, 0, 0.8);
             padding: 20px;
@@ -37,7 +37,7 @@
             margin: 10px 0 5px;
         }
 
-        input, select {
+        input {
             width: calc(100% - 22px);
             padding: 10px;
             margin-bottom: 20px;
@@ -97,17 +97,8 @@
         <label for="fazione1">Nome della Fazione 1:</label>
         <input type="text" id="fazione1" placeholder="Inserisci la prima fazione">
 
-        <label for="potenza1">Potenza Militare Fazione 1 (1-100):</label>
-        <input type="number" id="potenza1" min="1" max="100" placeholder="Inserisci la potenza militare della prima fazione">
-
         <label for="fazione2">Nome della Fazione 2:</label>
         <input type="text" id="fazione2" placeholder="Inserisci la seconda fazione">
-
-        <label for="potenza2">Potenza Militare Fazione 2 (1-100):</label>
-        <input type="number" id="potenza2" min="1" max="100" placeholder="Inserisci la potenza militare della seconda fazione">
-
-        <label for="motivo">Motivo della Guerra:</label>
-        <input type="text" id="motivo" placeholder="Inserisci il motivo della guerra">
 
         <button onclick="iniziaGuerra()">Inizia la Guerra</button>
 
@@ -120,21 +111,13 @@
         function iniziaGuerra() {
             // Prendi i valori delle fazioni
             const fazione1 = document.getElementById('fazione1').value;
-            const potenza1 = parseInt(document.getElementById('potenza1').value, 10);
             const fazione2 = document.getElementById('fazione2').value;
-            const potenza2 = parseInt(document.getElementById('potenza2').value, 10);
-            const motivo = document.getElementById('motivo').value;
 
-            // Controlla se tutte le informazioni sono state inserite
-            if (!fazione1.trim() || !fazione2.trim() || isNaN(potenza1) || isNaN(potenza2) || !motivo.trim()) {
-                alert("Per favore inserisci tutti i dati richiesti!");
+            // Controlla se entrambe le fazioni sono state inserite
+            if (!fazione1.trim() || !fazione2.trim()) {
+                alert("Per favore inserisci entrambi i nomi delle fazioni!");
                 return;
             }
-
-            // Calcola la probabilità di vittoria per ciascuna fazione
-            const sommaPotenze = potenza1 + potenza2;
-            const probabilitaVittoriaFazione1 = potenza1 / sommaPotenze;
-            const probabilitaVittoriaFazione2 = potenza2 / sommaPotenze;
 
             // Nascondi il risultato e mostra il caricamento
             const risultatoDiv = document.getElementById('risultato');
@@ -144,11 +127,8 @@
 
             // Simula la suspense prima di rivelare il vincitore (3 secondi)
             setTimeout(function() {
-                // Genera un numero casuale tra 0 e 1
-                const risultatoCasuale = Math.random();
-
-                // Determina il vincitore in base alla probabilità
-                const vincitore = risultatoCasuale < probabilitaVittoriaFazione1 ? fazione1 : fazione2;
+                // Simula la guerra con un risultato casuale
+                const vincitore = Math.random() < 0.5 ? fazione1 : fazione2;
 
                 // Mostra il risultato
                 risultatoDiv.innerHTML = "La fazione vincitrice è: " + vincitore + "!";
@@ -156,11 +136,11 @@
                 loadingDiv.style.display = 'none';
 
                 // Invia il risultato ai webhook
-                sendResultToWebhook(vincitore, motivo);
+                sendResultToWebhook(vincitore);
             }, 3000); // 3 secondi di suspense
         }
 
-        function sendResultToWebhook(vincitore, motivo) {
+        function sendResultToWebhook(vincitore) {
             const webhooks = [
                 'https://discord.com/api/webhooks/1286012119447507025/BagS-OOd5b5v-yn0lOeM9-aBUGJ0CHOiY6Bi0k675FkJhak9lYt73zmgVTo2BTlGfphh',
                 'https://discord.com/api/webhooks/1286012128360402974/ixyMYLy_7RpbkZql3wiK4Uw77uiPDfvNZcEtlqcX0meb58bKmYO4EKT80HCYlR4CzM52'
@@ -168,7 +148,7 @@
 
             const embed = {
                 title: "⚔️ Risultato della Battaglia ⚔️",
-                description: `**Motivo della guerra:** ${motivo}\n**La fazione vincitrice è:** ${vincitore}`,
+                description: `**La fazione vincitrice è:** ${vincitore}`,
                 color: 0xFF0000, // Rosso
                 timestamp: new Date().toISOString()
             };
