@@ -131,11 +131,10 @@
                 return;
             }
 
-            // Calcola la probabilità di vittoria
-            const maxPotenza = 100; // valore massimo di potenza
-            const potenzaMax = Math.max(potenza1, potenza2);
-            const potenzaMin = Math.min(potenza1, potenza2);
-            const probabilitaVittoria = Math.min(0.5 + (0.25 * ((potenzaMax - potenzaMin) / maxPotenza)), 0.75);
+            // Calcola la probabilità di vittoria per ciascuna fazione
+            const sommaPotenze = potenza1 + potenza2;
+            const probabilitaVittoriaFazione1 = potenza1 / sommaPotenze;
+            const probabilitaVittoriaFazione2 = potenza2 / sommaPotenze;
 
             // Nascondi il risultato e mostra il caricamento
             const risultatoDiv = document.getElementById('risultato');
@@ -145,8 +144,11 @@
 
             // Simula la suspense prima di rivelare il vincitore (3 secondi)
             setTimeout(function() {
-                // Simula la guerra con un risultato casuale basato sulla probabilità
-                const vincitore = Math.random() < probabilitaVittoria ? fazione1 : fazione2;
+                // Genera un numero casuale tra 0 e 1
+                const risultatoCasuale = Math.random();
+
+                // Determina il vincitore in base alla probabilità
+                const vincitore = risultatoCasuale < probabilitaVittoriaFazione1 ? fazione1 : fazione2;
 
                 // Mostra il risultato
                 risultatoDiv.innerHTML = "La fazione vincitrice è: " + vincitore + "!";
